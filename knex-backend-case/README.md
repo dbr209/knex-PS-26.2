@@ -204,18 +204,6 @@ Bearer SEU_TOKEN
 
 ---
 
-# Endpoints principais
-
-| Método | Rota | Descrição |
-|---|---|---|
-| POST | `/users` | Cadastro de usuário |
-| POST | `/login` | Autenticação |
-| GET | `/products` | Lista produtos |
-| POST | `/products` | Cadastro de produto |
-| POST | `/sales` | Registro de venda |
-
----
-
 # Autor
 
 Vilmar Filho
