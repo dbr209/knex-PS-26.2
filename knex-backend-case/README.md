@@ -2,96 +2,85 @@
 
 API REST desenvolvida como solução para o desafio técnico de Desenvolvedor Backend da KNEX Consultoria Jr.
 
+A aplicação consiste em uma API para gerenciamento de produtos e vendas de uma loja virtual, com autenticação de usuários e controle de estoque.
+
 ## Tecnologias utilizadas
 
 * Python 3.12+
 * FastAPI
 * SQLite
+* Docker
 * JWT (PyJWT)
 * Argon2 (hash de senhas)
 
-## Decisões técnicas
+---
 
-### FastAPI
+# Decisões técnicas
 
-Escolhi o FastAPI por ser um framework moderno para desenvolvimento de APIs REST, oferecendo boa performance, documentação automática e uma estrutura simples para organizar o projeto, além de já ter experiência com um framework similar (Flask)
+## FastAPI
 
-### SQLite
+Escolhi o FastAPI por ser um framework moderno para desenvolvimento de APIs REST, oferecendo boa performance, documentação automática e uma estrutura simples para organização do projeto, além de já possuir experiência com um framework similar (Flask).
 
-Foi utilizado SQLite por ser um banco de dados leve e suficiente para o escopo do desafio, não exigindo instalação de um servidor de banco de dados.
+## SQLite
 
-### Organização do projeto
+Foi utilizado SQLite por ser um banco de dados leve e suficiente para o escopo do desafio, não exigindo instalação de um servidor de banco de dados externo.
+
+## Docker
+
+Foi utilizado Docker para facilitar a execução da aplicação em diferentes ambientes, garantindo que as dependências necessárias estejam isoladas e padronizadas.
+
+## Organização do projeto
 
 O projeto foi separado em camadas para facilitar manutenção e evolução.
 
 ```
-app/
+knex-backend-case/
+│
 ├── database/
+│
+├── repository/
 │
 ├── routes/
 │
-├── services/
+├── schemas/
 │
 ├── security/
 │
-├── schemas/
+├── services/
 │
-└── main.py
+├── config.py
+├── exceptions.py
+├── main.py
 │
-└── exception.py
-│
-└── config.py
+├── Dockerfile
+├── requirements.txt
+└── .env.example
 ```
 
 Cada camada possui uma responsabilidade específica:
 
 * **routes**: define os endpoints da API.
-* **services**: contém as regras de negócio.
-* **database/repository**: realiza acesso ao banco de dados.
+* **services**: contém as regras de negócio da aplicação.
+* **repository**: realiza o acesso e manipulação dos dados.
+* **database**: contém a configuração e conexão com o banco de dados.
 * **security**: autenticação, JWT e hash de senhas.
 * **schemas**: modelos de entrada e saída da API.
-* **exception**: lança as execeções http
-* **config**: pega as variáveis de ambiente
+* **exceptions**: tratamento de exceções HTTP.
+* **config**: gerenciamento das variáveis de ambiente.
 
 ---
 
 # Como executar o projeto
 
-## 1. Clonar o repositório
+## Opção 1: Executando com Docker
 
-```bash
-git clone https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
+### Pré-requisitos
 
-cd SEU_REPOSITORIO
-```
+- Docker instalado.
 
-## 2. Criar ambiente virtual
+### 1. Configurar variáveis de ambiente
 
-Windows
-
-```bash
-python -m venv .venv
-
-.venv\Scripts\activate
-```
-
-Linux/macOS
-
-```bash
-python3 -m venv .venv
-
-source .venv/bin/activate
-```
-
-## 3. Instalar as dependências
-
-```bash
-pip install -r requirements.txt
-```
-
-## 4. Configurar variáveis de ambiente
-
-Crie um arquivo `.env` na raiz do projeto.
+Crie um arquivo `.env` baseado no arquivo `.env.example`.
 
 Exemplo:
 
@@ -105,13 +94,73 @@ ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=60
 ```
 
-## 5. Executar a aplicação
+### 2. Criar a imagem Docker
+
+Na raiz do projeto:
 
 ```bash
-uvicorn app.main:app --reload
+docker build -t techmart-api .
 ```
 
-A API ficará disponível em:
+### 3. Executar o container
+
+```bash
+docker run --env-file .env -p 8000:8000 techmart-api
+```
+
+A API estará disponível em:
+
+```
+http://localhost:8000
+```
+
+---
+
+## Opção 2: Executando localmente
+
+### 1. Clonar o repositório
+
+```bash
+git clone https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
+
+cd knex-backend-case
+```
+
+### 2. Criar ambiente virtual
+
+Windows:
+
+```bash
+python -m venv .venv
+
+.venv\Scripts\activate
+```
+
+Linux/macOS:
+
+```bash
+python3 -m venv .venv
+
+source .venv/bin/activate
+```
+
+### 3. Instalar dependências
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configurar variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do projeto baseado no `.env.example`.
+
+### 5. Executar a aplicação
+
+```bash
+uvicorn main:app --reload
+```
+
+A API estará disponível em:
 
 ```
 http://localhost:8000
@@ -121,17 +170,15 @@ http://localhost:8000
 
 # Documentação da API
 
-Após iniciar o servidor, a documentação automática pode ser acessada em:
+A documentação automática do FastAPI está disponível em:
 
-Swagger UI
+## Swagger UI
 
 ```
 http://localhost:8000/docs
 ```
 
-ou
-
-ReDoc
+## ReDoc
 
 ```
 http://localhost:8000/redoc
@@ -141,7 +188,7 @@ http://localhost:8000/redoc
 
 # Como testar
 
-A forma mais simples é utilizando o Swagger.
+A forma mais simples de testar a API é utilizando o Swagger.
 
 1. Crie um usuário.
 2. Faça login.
@@ -153,7 +200,19 @@ A forma mais simples é utilizando o Swagger.
 Bearer SEU_TOKEN
 ```
 
-6. Teste as rotas protegidas.
+6. Execute as rotas protegidas.
+
+---
+
+# Endpoints principais
+
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/users` | Cadastro de usuário |
+| POST | `/login` | Autenticação |
+| GET | `/products` | Lista produtos |
+| POST | `/products` | Cadastro de produto |
+| POST | `/sales` | Registro de venda |
 
 ---
 
